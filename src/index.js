@@ -12,28 +12,26 @@ const countryInfo = document.querySelector('.country-info');
 const onCountryFormInput = event => {
   const searchedQuery = searchInput.value.trim();
 
-  fetchCountries(searchedQuery)
-    .then(data => {
-      const amount = data.length;
+  if (!searchedQuery) {
+    countryInfo.innerHTML = '';
+    countryList.innerHTML = '';
+    return;
+  }
 
-      if (amount > 10) {
-        Notify.info(
-          'Too many matches found. Please enter a more specific name.'
-        );
-      } else if (amount >= 2 && amount <= 10) {
-        createCountryList(data);
-      } else if (amount === 1) {
-        createCountryCard(data[0]);
-      }
-    })
-    .catch(err => {
-      switch (err.message) {
-        case '404': {
-          Notify.failure('Oops, there is no country with that name');
-          break;
-        }
-      }
-    });
+   fetchCountries(searchedQuery).then(data => {
+    console.log(data.length)
+    if (data.length > 10) {
+      countryInfo.innerHTML = '';
+    countryList.innerHTML = '';
+      Notify.info('Too many matches found. Please enter a more specific name.');
+    } else if (data.length >= 2 && data.length <= 10) {
+      createCountryList(data);
+      countryInfo.innerHTML = '';
+    } else if (data.length === 1) {
+      createCountryCard(data[0]);
+      countryList.innerHTML = '';
+    }
+  });
 };
 
 function createCountryList(data) {
@@ -41,7 +39,7 @@ function createCountryList(data) {
     .map(({ name, flags }) => {
       return `<li class="country-list-item">
       <img src="${flags.svg}" alt="flag" width="30px">
-      <p>${name.official}</p>
+      <p>${name}</p>
     </li>`;
     })
     .join('');
@@ -49,18 +47,22 @@ function createCountryList(data) {
 }
 
 function createCountryCard(data) {
+
   const markup = `<ul>
       <li class="country-list-item">
       <img src="${data.flags.svg}" alt="flag" width="30px">
-      <p>${data.name.official}</p>
+      <p>${data.name}</p>
       </li>
       <li><p class="country-list-text">Capital: ${data.capital}</p></li>
       <li><p class="country-list-text">Population: ${data.population}</p></li>
-      <li><p class="country-list-text">Languages: ${Object.values(
-        data.languages
-      ).join(', ')}</p></li>
+      <li><p class="country-list-text">Languages: ${Object.values(data.languages)
+        .map(el => el.name)
+        .join(', ')}</p></li> 
     </ul>`;
   countryInfo.innerHTML = markup;
 }
 
-searchInput.addEventListener('input', debounce(onCountryFormInput, DEBOUNCE_DELAY));
+searchInput.addEventListener(
+  'input',
+  debounce(onCountryFormInput, DEBOUNCE_DELAY)
+);
