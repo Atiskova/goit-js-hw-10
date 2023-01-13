@@ -38,7 +38,7 @@ function createCountryList(data) {
   const markup = data
     .map(({ name, flags }) => {
       return `<li class="country-list-item">
-      <img src="${flags.svg}" alt="flag" width="30px">
+      <img src="${flags.svg}" alt="flag" height="15px">
       <p>${name}</p>
     </li>`;
     })
@@ -48,14 +48,15 @@ function createCountryList(data) {
 
 function createCountryCard(data) {
 
-  const markup = `<ul>
-      <li class="country-list-item">
-      <img src="${data.flags.svg}" alt="flag" width="30px">
-      <p>${data.name}</p>
-      </li>
-      <li><p class="country-list-text">Capital: ${data.capital}</p></li>
-      <li><p class="country-list-text">Population: ${data.population}</p></li>
-      <li><p class="country-list-text">Languages: ${Object.values(data.languages)
+  const markup = `
+      <div class="country-list-item">
+      <img src="${data.flags.svg}" alt="flag" height="15px">
+      <h1>${data.name}</h1>
+      </div>
+      <ul class="country-list">
+      <li><p class="country-list-text"><b>Capital</b>: ${data.capital}</p></li>
+      <li><p class="country-list-text"><b>Population</b>: ${data.population}</p></li>
+      <li><p class="country-list-text"><b>Languages</b>: ${Object.values(data.languages)
         .map(el => el.name)
         .join(', ')}</p></li> 
     </ul>`;
