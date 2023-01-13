@@ -19,7 +19,7 @@ const onCountryFormInput = event => {
   }
 
    fetchCountries(searchedQuery).then(data => {
-    console.log(data.length)
+    
     if (data.length > 10) {
       countryInfo.innerHTML = '';
     countryList.innerHTML = '';
@@ -31,8 +31,16 @@ const onCountryFormInput = event => {
       createCountryCard(data[0]);
       countryList.innerHTML = '';
     }
-  });
-};
+  })
+  .catch(err => {
+    switch (err.message) {
+      case '404': {
+        Notify.failure("Oops, there is no country with that name");
+        break;
+      }
+    }
+  })
+};  
 
 function createCountryList(data) {
   const markup = data
